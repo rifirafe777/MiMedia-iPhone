@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="es">
+<head><meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob:; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'none'">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0d0b">
+
+
+
+  <meta name="description" content="Tu música personal. Descarga audio mediante enlaces y escúchalo sin conexión.">
+
+
+  <link rel="icon" href="./icons/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>MiMedia · Tu música contigo</title>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="MiMedia, Inicio"><img class="brand-logo" src="./icons/logo.png" alt="" width="48" height="48"><span>MiMedia<small>TU MÚSICA PERSONAL</small></span></a>
+      <span class="connection" id="connection">Con conexión</span>
+      <button id="help-button" class="icon-button" aria-label="Instalar y ayuda">?</button>
+    </header>
+    <main id="main">
+      <section id="inicio" class="page">
+        <div class="eyebrow">TU ESPACIO. TU MÚSICA.</div>
+        <h1>Un enlace.<br><span>Tu próxima canción.</span></h1>
+        <p class="intro">Guarda el audio que te gusta. Escúchalo cuando quieras, también sin conexión.</p>
+        <div class="home-shortcuts"><a href="#biblioteca"><strong id="home-count">0</strong><span>Canciones guardadas</span></a><button id="home-favorites" type="button"><strong id="home-favorite-count">0</strong><span>Favoritos ♡</span></button></div>
+        <form id="download-form" class="download-card">
+          <div class="card-heading"><span class="tile" aria-hidden="true">↙</span><div><h2>Descargar audio</h2><p>De un enlace a tu biblioteca</p></div><span class="tag">5.0 iOS</span></div>
+          <label for="links">Enlace o texto con varios enlaces</label>
+          <textarea id="links" rows="3" maxlength="100000" placeholder="https://ejemplo.com/mi-cancion.mp3" autocomplete="off" autocapitalize="none" spellcheck="false" required></textarea>
+          <label class="check"><input type="checkbox" id="authorized" required><span>Tengo autorización para descargar este audio.</span></label>
+          <button type="submit" class="primary" id="download-button"><span aria-hidden="true">↓</span> Guardar audio sin conexión</button>
+          <p class="fine-print">Archivos de audio directo por HTTPS; descarga nativa. YouTube necesita un motor adicional, todavía pendiente.</p>
+        </form>
+        <div class="section-heading"><h2>Descargas</h2><span id="queue-count" class="muted">Sin pendientes</span></div>
+        <div class="queue-actions"><button id="continue-queue" class="secondary" type="button">Continuar cola</button><button id="cancel-all" class="secondary" type="button">Cancelar pendientes</button></div>
+        <p class="fine-print">Hasta 30 enlaces por envío. Para reintentar, confirma de nuevo la autorización. YouTube sigue pendiente de motor.</p>
+        <div id="downloads" class="stack"></div>
+        <div class="offline-note"><span aria-hidden="true">◉</span><div><strong>Tu música se queda contigo</strong><p>El audio guardado se reproduce desde este dispositivo. Mantén la app abierta mientras descarga.</p></div></div>
+      </section>
+      <section id="buscar" class="page" hidden>
+        <div class="eyebrow">ENCUENTRA TU SONIDO</div><h1>Buscar</h1>
+        <label class="sr-only" for="search">Buscar en tu biblioteca</label><input type="search" id="search" placeholder="Canción, artista o álbum…" autocomplete="off">
+        <p class="fine-print">Busca entre tu música guardada, también sin conexión.</p>
+        <div id="search-results" class="song-list"></div>
+      </section>
+      <section id="biblioteca" class="page" hidden>
+        <div class="eyebrow">DISPONIBLE SIN CONEXIÓN</div><h1>Tu biblioteca<span class="dot">.</span></h1>
+        <div class="library-filters" role="group" aria-label="Mostrar en Biblioteca"><button type="button" data-library="songs" aria-pressed="true">Canciones</button><button type="button" data-library="favorites" aria-pressed="false">Favoritos</button><button type="button" data-library="albums" aria-pressed="false">Álbumes</button><button type="button" data-library="artists" aria-pressed="false">Artistas</button></div>
+        <div id="group-heading" hidden><button id="back-groups" class="secondary" type="button">← Volver</button><h2 id="group-title"></h2></div>
+        <div class="section-heading"><p id="library-count" class="muted">0 canciones</p><button class="secondary" id="play-all">▶ Reproducir todo</button></div>
+        <div id="library" class="song-list"></div>
+        <details class="storage-panel"><summary>Almacenamiento del dispositivo</summary><p id="storage-info">Consultando espacio…</p><button id="persist" class="secondary">Solicitar conservación de datos</button><p class="fine-print">Los audios son archivos privados de MiMedia. Usa Compartir archivo para conservar una copia antes de desinstalar la app.</p></details>
+      </section>
+      <section id="playlists" class="page" hidden>
+        <div class="eyebrow">A TU MANERA</div><h1>Tus playlists<span class="dot">.</span></h1>
+        <form id="playlist-form" class="inline-form"><label class="sr-only" for="playlist-name">Nombre de la playlist</label><input id="playlist-name" placeholder="Nombre de tu nueva playlist" maxlength="80" required><button class="secondary" type="submit">Crear</button></form>
+        <div id="playlist-list" class="stack"></div>
+      </section>
+      <p id="status" role="status" aria-live="polite"></p>
+    </main>
+    <div class="bottom-bar">
+      <section class="player" aria-label="Reproductor">
+        <div class="player-heading"><span id="now-art" class="cover-mini" aria-hidden="true">♪</span><div class="player-copy"><strong id="now-title">Tu música, a tu ritmo</strong><small id="now-subtitle">Elige una canción de tu biblioteca</small></div><button id="now-favorite" class="icon-button favorite-button" aria-label="Añadir canción actual a favoritos" aria-pressed="false" disabled>♡</button></div>
+        <div class="native-controls"><button id="native-toggle" class="secondary" type="button" disabled>Reproducir</button><input id="native-seek" type="range" min="0" max="1" value="0" step="0.1" aria-label="Posicion de reproduccion" disabled><small id="native-time">0:00 / 0:00</small></div>
+        <div class="transport"><button id="previous" class="icon-button" aria-label="Canción anterior">⏮</button><button id="shuffle" class="mode-button" aria-pressed="false">Aleatorio</button><button id="repeat" class="mode-button" aria-pressed="false">Repetir: no</button><button id="next" class="icon-button" aria-label="Canción siguiente">⏭</button></div>
+      </section>
+      <nav aria-label="Navegación principal"><a href="#inicio" data-page="inicio" aria-current="page"><span aria-hidden="true">⌂</span>Inicio</a><a href="#buscar" data-page="buscar"><span aria-hidden="true">⌕</span>Buscar</a><a href="#biblioteca" data-page="biblioteca"><span aria-hidden="true">♫</span>Biblioteca</a><a href="#playlists" data-page="playlists"><span aria-hidden="true">≡</span>Playlists</a></nav>
+    </div>
+  </div>
+  <dialog id="edit-song"><form id="metadata-form"><div class="dialog-heading"><h2>Detalles de la canción</h2><button id="close-editor" type="button" class="icon-button" aria-label="Cerrar editor">×</button></div><p class="fine-print">Los cambios se guardan en tu biblioteca local. El archivo de audio se conserva.</p><label for="edit-title">Título</label><input id="edit-title" maxlength="150" required><label for="edit-artist">Artista</label><input id="edit-artist" maxlength="150"><label for="edit-album">Álbum</label><input id="edit-album" maxlength="150"><label for="edit-year">Año</label><input id="edit-year" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"><label for="edit-artwork">Carátula local (JPG, PNG o WebP; hasta 5 MB)</label><input id="edit-artwork" type="file" accept="image/jpeg,image/png,image/webp"><label class="check"><input id="remove-artwork" type="checkbox"><span>Quitar la carátula actual</span></label><p id="editor-status" role="status"></p><button id="save-metadata" type="submit" class="primary">Guardar cambios</button></form></dialog>
+  <dialog id="help"><div class="dialog-heading"><h2>MiMedia para iPhone</h2><button id="close-help" class="icon-button" aria-label="Cerrar ayuda">&#215;</button></div><p>Esta interfaz forma parte de una app iOS instalada. El audio y el catalogo se guardan localmente y se reproducen con AVFoundation.</p><p>Pega enlaces HTTPS de archivos de audio que tengas permiso para descargar. La transferencia es nativa y no depende de CORS del navegador. YouTube sigue pendiente de motor; la autorizacion no elimina sus restricciones.</p><p>Manten MiMedia abierta durante la descarga de esta primera version. La reproduccion local usa sesion de audio de fondo y controles de bloqueo; su funcionamiento real debe verificarse en iPhone.</p><button id="native-test" type="button" class="secondary">Anadir tono de prueba local (no descargado)</button><p>No hay servidor de conversion ni sincronizacion con Android o con la PWA. Exporta tus archivos importantes antes de desinstalar.</p></dialog>
+  <script src="./native.js"></script>
+</body>
+</html>

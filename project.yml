@@ -1,0 +1,30 @@
+name: MiMedia
+options:
+  bundleIdPrefix: com.mimedia
+  deploymentTarget:
+    iOS: '16.0'
+targets:
+  MiMedia:
+    type: application
+    platform: iOS
+    sources:
+      - path: Native
+        excludes:
+          - Info.plist
+      - path: Web
+        type: folder
+        buildPhase: resources
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.mimedia.personal
+        PRODUCT_NAME: MiMedia
+        MARKETING_VERSION: '5.0'
+        CURRENT_PROJECT_VERSION: '1'
+        SWIFT_VERSION: '5.0'
+        TARGETED_DEVICE_FAMILY: '1'
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        GENERATE_INFOPLIST_FILE: NO
+        INFOPLIST_FILE: Native/Info.plist
+        CODE_SIGNING_ALLOWED: NO
+    scheme:
+      gatherCoverageData: false

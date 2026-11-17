@@ -1,0 +1,37 @@
+name: Compilar MiMedia IPA sin firma
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: mimedia-ipa-manual
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v6
+      - name: Comprobar entorno e instalar XcodeGen si falta
+        run: |
+          xcodebuild -version
+          if ! command -v xcodegen >/dev/null 2>&1; then
+            brew install xcodegen
+          fi
+      - name: Construir IPA arm64 sin firma
+        run: bash scripts/build-unsigned.sh
+      - name: Guardar IPA y comprobaciones
+        uses: actions/upload-artifact@v7
+        with:
+          name: MiMedia-IPA-sin-firma
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
+      - name: Conservar registro si falla la compilacion
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: MiMedia-diagnostico
+          path: artifacts/build.log
+          if-no-files-found: ignore
+          retention-days: 7
